@@ -15,4 +15,11 @@ https://github.com/Klerith/fernando-skills
 npx skills@latest add Klerith/fernando-skills
 ```
 
-## Hola mundo
+## Commands
+
+- `npm run dev` — start dev server (Next.js)
+- `npm run build` — production build
+- `npm run start` — run production build
+- `npm run lint` — ESLint (flat config in `eslint.config.mjs`, extends `next/core-web-vitals` + `next/typescript`)
+
+No test runner is configured yet.
