@@ -1,6 +1,6 @@
 # 01 — Arcade Vault MVP Visual
 
-**Estado:** Approved
+**Estado:** Done
 **Depende de:** —
 **Fecha:** 2026-08-17
 
@@ -82,22 +82,22 @@ Persistencia en `localStorage` (mismas claves que el template):
 
 ## Criterios de aceptación
 
-- [ ] `/` muestra hero, buscador funcional (filtra por texto), chips de categoría funcionales, grid de 8 juegos con datos de `lib/data.ts`.
-- [ ] Buscar un término sin resultados muestra el estado vacío "NO HAY RESULTADOS".
-- [ ] Click en una card o en "JUGAR" navega a `/juego/[id]` con el `id` correcto.
-- [ ] `/juego/[id]` muestra info del juego y un leaderboard de 10 filas generado por `seededScores`.
-- [ ] "JUGAR AHORA" navega a `/juego/[id]/jugar`; "VOLVER AL VAULT" navega a `/`.
-- [ ] `/juego/[id]/jugar` incrementa el score automáticamente cada ~220ms mientras no está pausado ni terminado.
-- [ ] Botón "PAUSA" detiene el incremento de score y muestra overlay "EN PAUSA"; "REANUDAR" lo revierte.
-- [ ] Botón "FIN" abre modal con score final, input de iniciales y botón "GUARDAR PUNTUACIÓN".
-- [ ] Guardar puntuación escribe una entrada en `localStorage.av_scores` y muestra el toast "PUNTUACIÓN GUARDADA\_".
-- [ ] "JUGAR DE NUEVO" reinicia score/vidas/nivel sin salir de la pantalla; "VOLVER AL VAULT" navega a `/`.
-- [ ] `/salon` muestra tabs por los 8 juegos, podio top 3 y tabla de 12 filas; si hay usuario logueado, muestra fila "tu mejor marca".
-- [ ] `/auth` permite entrar con cualquier texto en "Usuario" (tab iniciar sesión o crear cuenta) y redirige a `/` guardando el nombre en `localStorage.av_user`.
-- [ ] "JUGAR COMO INVITADO" entra sin usuario (user = null) y redirige a `/`.
-- [ ] Tras login, el botón de auth en `Nav` muestra el nombre de usuario; click hace sign-out y limpia `localStorage.av_user`.
-- [ ] Panel móvil (`hamburger`) abre/cierra correctamente en viewport angosto y refleja las mismas rutas que el nav desktop.
-- [ ] No existe ninguna ruta ni componente que implemente lógica jugable real de los minijuegos (colisiones, input de teclado para jugar, reglas de puntuación reales).
+- [x] `/` muestra hero, buscador funcional (filtra por texto), chips de categoría funcionales, grid de 8 juegos con datos de `lib/data.ts`.
+- [x] Buscar un término sin resultados muestra el estado vacío "NO HAY RESULTADOS".
+- [x] Click en una card o en "JUGAR" navega a `/juego/[id]` con el `id` correcto.
+- [x] `/juego/[id]` muestra info del juego y un leaderboard de 10 filas generado por `seededScores`.
+- [x] "JUGAR AHORA" navega a `/juego/[id]/jugar`; "VOLVER AL VAULT" navega a `/`.
+- [x] `/juego/[id]/jugar` incrementa el score automáticamente cada ~220ms mientras no está pausado ni terminado.
+- [x] Botón "PAUSA" detiene el incremento de score y muestra overlay "EN PAUSA"; "REANUDAR" lo revierte.
+- [x] Botón "FIN" abre modal con score final, input de iniciales y botón "GUARDAR PUNTUACIÓN".
+- [x] Guardar puntuación escribe una entrada en `localStorage.av_scores` y muestra el toast "PUNTUACIÓN GUARDADA\_".
+- [x] "JUGAR DE NUEVO" reinicia score/vidas/nivel sin salir de la pantalla; "VOLVER AL VAULT" navega a `/`.
+- [x] `/salon` muestra tabs por los 8 juegos, podio top 3 y tabla de 12 filas; si hay usuario logueado, muestra fila "tu mejor marca".
+- [x] `/auth` permite entrar con cualquier texto en "Usuario" (tab iniciar sesión o crear cuenta) y redirige a `/` guardando el nombre en `localStorage.av_user`.
+- [x] "JUGAR COMO INVITADO" entra sin usuario (user = null) y redirige a `/`.
+- [x] Tras login, el botón de auth en `Nav` muestra el nombre de usuario; click hace sign-out y limpia `localStorage.av_user`.
+- [x] Panel móvil (`hamburger`) abre/cierra correctamente en viewport angosto y refleja las mismas rutas que el nav desktop.
+- [x] No existe ninguna ruta ni componente que implemente lógica jugable real de los minijuegos (colisiones, input de teclado para jugar, reglas de puntuación reales).
 
 ## Decisiones tomadas y descartadas
 

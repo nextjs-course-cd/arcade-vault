@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 
 export interface AuthUser {
   name: string;
@@ -16,15 +16,14 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-
-  useEffect(() => {
+  const [user, setUser] = useState<AuthUser | null>(() => {
+    if (typeof window === "undefined") return null;
     try {
-      setUser(JSON.parse(localStorage.getItem("av_user") || "null"));
+      return JSON.parse(localStorage.getItem("av_user") || "null");
     } catch {
-      setUser(null);
+      return null;
     }
-  }, []);
+  });
 
   const login = (name: string) => {
     const u: AuthUser = { name: (name || "PLAYER1").toUpperCase().slice(0, 10) };

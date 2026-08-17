@@ -29,16 +29,13 @@ export default function GamePlayerPage() {
   const game = GAMES.find((g) => g.id === params.id);
 
   const [score, setScore] = useState(0);
-  const [lives, setLives] = useState(3);
-  const [level, setLevel] = useState(1);
+  const [lives] = useState(3);
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
-  const [name, setName] = useState(user ? user.name : "INVITADO");
+  const [name, setName] = useState(() => (user ? user.name : "INVITADO"));
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => {
-    setName(user ? user.name : "INVITADO");
-  }, [user]);
+  const level = Math.floor(score / 2500) + 1;
 
   useEffect(() => {
     if (over || paused) return;
@@ -46,17 +43,11 @@ export default function GamePlayerPage() {
     return () => clearInterval(t);
   }, [over, paused]);
 
-  useEffect(() => {
-    if (score > 0 && score % 2500 < 100) setLevel((l) => l + 1);
-  }, [score]);
-
   if (!game) return null;
 
   const endGame = () => setOver(true);
   const restart = () => {
     setScore(0);
-    setLives(3);
-    setLevel(1);
     setPaused(false);
     setOver(false);
     setSaved(false);
