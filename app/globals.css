@@ -21,6 +21,24 @@
   --mono: var(--font-mono), "JetBrains Mono", "Courier Prime", "Courier New", monospace;
 }
 
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-bg-3: var(--bg-3);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-ink-faint: var(--ink-faint);
+  --color-cyan: var(--cyan);
+  --color-magenta: var(--magenta);
+  --color-yellow: var(--yellow);
+  --color-green: var(--green);
+  --color-gold: var(--gold);
+  --color-silver: var(--silver);
+  --color-bronze: var(--bronze);
+  --font-pixel: var(--pixel);
+  --font-mono: var(--mono);
+}
+
 * { box-sizing: border-box; }
 
 html, body, #root {
