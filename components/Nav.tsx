@@ -1,25 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-interface StoredUser {
-  name: string;
-}
+import { useAuth } from "@/lib/auth";
 
 export function Nav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState<StoredUser | null>(null);
-
-  useEffect(() => {
-    try {
-      setUser(JSON.parse(localStorage.getItem("av_user") || "null"));
-    } catch {
-      setUser(null);
-    }
-  }, [pathname]);
+  const { user, signOut: authSignOut } = useAuth();
 
   const isActive = (name: "biblioteca" | "salon") =>
     name === "salon" ? pathname === "/salon" : pathname === "/" || pathname.startsWith("/juego");
@@ -27,8 +16,7 @@ export function Nav() {
   const close = () => setOpen(false);
 
   const signOut = () => {
-    localStorage.removeItem("av_user");
-    setUser(null);
+    authSignOut();
     close();
   };
 
