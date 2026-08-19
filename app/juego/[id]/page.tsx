@@ -52,7 +52,7 @@ export default function GameDetailPage() {
             <button className="btn xl pulse" onClick={() => router.push(`/juego/${game.id}/jugar`)}>
               ▶ JUGAR AHORA
             </button>
-            <Link href="/" className="btn ghost lg">
+            <Link href="/juegos" className="btn ghost lg">
               VOLVER AL VAULT
             </Link>
           </div>
