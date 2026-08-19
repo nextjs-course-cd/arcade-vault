@@ -45,20 +45,20 @@ No se introduce modelo de datos nuevo. Se reutiliza `GAMES` de `lib/data.ts` (ya
 
 ## Criterios de aceptación
 
-- [ ] `/` muestra la landing completa: hero con CTAs "Explorar juegos" y "Crear cuenta", sección de features (4 cards), preview de 6 juegos, stats, actividad en vivo, precios con FAQ, y CTA final.
-- [ ] Las secciones con clase `reveal` inician con opacidad 0 y aparecen (clase `.in`) al hacer scroll hasta ellas.
-- [ ] Botón "Explorar juegos" del hero y "Ver todos los juegos" de la sección de preview navegan a `/juegos`.
-- [ ] Botón "Crear cuenta" del hero y "Empezar gratis" de precios navegan a `/auth`.
-- [ ] Click en una `MiniCard` de la sección de preview navega a `/juego/[id]` del juego correspondiente.
-- [ ] Botón "Ver salón" de la sección de actividad navega a `/salon`.
-- [ ] `/juegos` muestra exactamente el mismo contenido y comportamiento (buscador, chips, grid) que antes tenía `/`.
-- [ ] Nav (desktop y panel móvil) muestra 4 links: "Inicio" (`/`), "Biblioteca" (`/juegos`), "Salón de la Fama" (`/salon`), "Acerca de" (`/about`).
-- [ ] El link "Biblioteca" del Nav se marca activo en `/juegos` y en `/juego/[id]` y `/juego/[id]/jugar`.
-- [ ] El link "Inicio" del Nav se marca activo solo en `/`.
-- [ ] Botón "Volver al vault" en `/juego/[id]` y en `/juego/[id]/jugar` navega a `/juegos`.
-- [ ] Botón de volver en `/salon` navega a `/juegos`.
-- [ ] Tras login, registro o "Jugar como invitado" en `/auth`, la redirección es a `/juegos` (no a `/`).
-- [ ] No existe ninguna página `/about` en este spec; el link "Acerca de" del Nav puede dar 404 hasta la siguiente iteración.
+- [x] `/` muestra la landing completa: hero con CTAs "Explorar juegos" y "Crear cuenta", sección de features (4 cards), preview de 6 juegos, stats, actividad en vivo, precios con FAQ, y CTA final.
+- [x] Las secciones con clase `reveal` inician con opacidad 0 y aparecen (clase `.in`) al hacer scroll hasta ellas.
+- [x] Botón "Explorar juegos" del hero y "Ver todos los juegos" de la sección de preview navegan a `/juegos`.
+- [x] Botón "Crear cuenta" del hero y "Empezar gratis" de precios navegan a `/auth`.
+- [x] Click en una `MiniCard` de la sección de preview navega a `/juego/[id]` del juego correspondiente.
+- [x] Botón "Ver salón" de la sección de actividad navega a `/salon`.
+- [x] `/juegos` muestra exactamente el mismo contenido y comportamiento (buscador, chips, grid) que antes tenía `/`.
+- [x] Nav (desktop y panel móvil) muestra 4 links: "Inicio" (`/`), "Biblioteca" (`/juegos`), "Salón de la Fama" (`/salon`), "Acerca de" (`/about`).
+- [x] El link "Biblioteca" del Nav se marca activo en `/juegos` y en `/juego/[id]` y `/juego/[id]/jugar`.
+- [x] El link "Inicio" del Nav se marca activo solo en `/`.
+- [x] Botón "Volver al vault" en `/juego/[id]` y en `/juego/[id]/jugar` navega a `/juegos`.
+- [x] Botón de volver en `/salon` navega a `/juegos`.
+- [x] Tras login, registro o "Jugar como invitado" en `/auth`, la redirección es a `/juegos` (no a `/`).
+- [x] No existe ninguna página `/about` en este spec; el link "Acerca de" del Nav puede dar 404 hasta la siguiente iteración.
 
 ## Decisiones tomadas y descartadas
 
