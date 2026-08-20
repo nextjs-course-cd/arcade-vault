@@ -1,6 +1,6 @@
 # 02 — Homepage Landing
 
-**Estado:** Approved
+**Estado:** Done
 **Depende de:** SPEC 01
 **Fecha:** 2026-08-19
 
