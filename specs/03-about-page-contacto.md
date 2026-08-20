@@ -1,6 +1,6 @@
 # 03 — About Page y Contacto (mock)
 
-**Estado:** Approved
+**Estado:** Done
 **Depende de:** SPEC 02
 **Fecha:** 2026-08-19
 
@@ -43,15 +43,15 @@ No se introduce modelo de datos nuevo ni persistencia. El estado del formulario 
 
 ## Criterios de aceptación
 
-- [ ] `/acerca-de` muestra la sección hero completa: kicker, título "ACERCA DE ARCADE VAULT", texto de misión, y los 3 highlights (corazón, navegador, planta).
-- [ ] El divisor animado (`about-divider`) y la sección de contacto inician con opacidad 0 y aparecen (clase `.in`) al hacer scroll hasta ellos.
-- [ ] Enviar el formulario con algún campo vacío aplica la animación `shake` y no avanza al estado de éxito.
-- [ ] Enviar el formulario con un correo sin formato válido (ej. `"abc"`) aplica `shake` y no avanza al estado de éxito.
-- [ ] Enviar el formulario con nombre, correo válido y mensaje no vacíos muestra el bloque `terminal-success` con el nombre en mayúsculas en la línea final, sin ninguna llamada de red.
-- [ ] El botón "Enviar otro mensaje" vuelve a mostrar el formulario vacío.
-- [ ] El link "Acerca de" del Nav (desktop y panel móvil) navega a `/acerca-de` y ya no da 404.
-- [ ] El link "Acerca de" del Nav se marca activo (`isActive`) solo en `/acerca-de`.
-- [ ] No existe ninguna llamada a `fetch`, API route, ni escritura a `localStorage` asociada al envío del formulario de contacto.
+- [x] `/acerca-de` muestra la sección hero completa: kicker, título "ACERCA DE ARCADE VAULT", texto de misión, y los 3 highlights (corazón, navegador, planta).
+- [x] El divisor animado (`about-divider`) y la sección de contacto inician con opacidad 0 y aparecen (clase `.in`) al hacer scroll hasta ellos.
+- [x] Enviar el formulario con algún campo vacío aplica la animación `shake` y no avanza al estado de éxito.
+- [x] Enviar el formulario con un correo sin formato válido (ej. `"abc"`) aplica `shake` y no avanza al estado de éxito.
+- [x] Enviar el formulario con nombre, correo válido y mensaje no vacíos muestra el bloque `terminal-success` con el nombre en mayúsculas en la línea final, sin ninguna llamada de red.
+- [x] El botón "Enviar otro mensaje" vuelve a mostrar el formulario vacío.
+- [x] El link "Acerca de" del Nav (desktop y panel móvil) navega a `/acerca-de` y ya no da 404.
+- [x] El link "Acerca de" del Nav se marca activo (`isActive`) solo en `/acerca-de`.
+- [x] No existe ninguna llamada a `fetch`, API route, ni escritura a `localStorage` asociada al envío del formulario de contacto.
 
 ## Decisiones tomadas y descartadas
 
