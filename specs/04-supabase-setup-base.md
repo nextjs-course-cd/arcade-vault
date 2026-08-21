@@ -1,6 +1,6 @@
 # 04 — Setup base de Supabase
 
-**Estado:** Approved
+**Estado:** Implemented
 **Depende de:** —
 **Fecha:** 2026-08-20
 
