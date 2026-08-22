@@ -6,14 +6,9 @@ import {
   type AsteroidsGameHandle,
   type AsteroidsState,
 } from "@/lib/games/asteroids/engine";
+import type { ArcadeGameProps } from "@/lib/games/types";
 
-export interface AsteroidsGameProps {
-  paused: boolean;
-  onScoreChange: (score: number) => void;
-  onLivesChange: (lives: number) => void;
-  onLevelChange: (level: number) => void;
-  onGameOver: () => void;
-}
+export type AsteroidsGameProps = ArcadeGameProps;
 
 const INTERNAL_WIDTH = 800;
 const INTERNAL_HEIGHT = 600;

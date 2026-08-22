@@ -3,23 +3,11 @@
 // (sin globals de módulo) para poder montar/desmontar instancias desde React
 // sin colisiones (p. ej. Strict Mode montando efectos dos veces).
 
-export interface AsteroidsState {
-  score: number;
-  lives: number;
-  level: number;
-  status: "playing" | "dead" | "gameover";
-}
+import type { ArcadeGameState, ArcadeGameCallbacks, ArcadeGameHandle } from "@/lib/games/types";
 
-export interface AsteroidsGameCallbacks {
-  onStateChange(state: AsteroidsState): void;
-}
-
-export interface AsteroidsGameHandle {
-  start(): void;
-  pause(): void;
-  resume(): void;
-  stop(): void;
-}
+export type AsteroidsState = ArcadeGameState;
+export type AsteroidsGameCallbacks = ArcadeGameCallbacks;
+export type AsteroidsGameHandle = ArcadeGameHandle;
 
 export function createAsteroidsGame(
   canvas: HTMLCanvasElement,

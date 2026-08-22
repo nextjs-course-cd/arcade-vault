@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import type { GameWithStats } from "@/lib/games";
 import { useAuth } from "@/lib/auth";
 import { saveScore } from "@/lib/actions/scores";
-import AsteroidGame from "@/components/games/AsteroidGame";
+import { getGameComponent } from "@/lib/games/registry";
 
 export function GamePlayer({ game }: { game: GameWithStats }) {
   const router = useRouter();
   const { user } = useAuth();
 
-  const isAsteroids = game.id === "asteroids";
+  const GameComponent = getGameComponent(game.id);
+  const isReal = Boolean(GameComponent);
 
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
@@ -22,13 +23,13 @@ export function GamePlayer({ game }: { game: GameWithStats }) {
   const [saved, setSaved] = useState(false);
   const [instanceKey, setInstanceKey] = useState(0);
 
-  const level = isAsteroids ? engineLevel : Math.floor(score / 2500) + 1;
+  const level = isReal ? engineLevel : Math.floor(score / 2500) + 1;
 
   useEffect(() => {
-    if (over || paused || isAsteroids) return;
+    if (over || paused || isReal) return;
     const t = setInterval(() => setScore((s) => s + Math.floor(10 + Math.random() * 90)), 220);
     return () => clearInterval(t);
-  }, [over, paused, isAsteroids]);
+  }, [over, paused, isReal]);
 
   const endGame = () => setOver(true);
   const restart = () => {
@@ -79,8 +80,8 @@ export function GamePlayer({ game }: { game: GameWithStats }) {
 
       <div className="crt">
         <div className="crt-screen">
-          {isAsteroids ? (
-            <AsteroidGame
+          {GameComponent ? (
+            <GameComponent
               key={instanceKey}
               paused={paused || over}
               onScoreChange={setScore}
