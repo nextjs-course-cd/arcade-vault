@@ -2,9 +2,9 @@
 
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
-import type { Game } from "@/lib/data";
+import type { GameWithStats } from "@/lib/games";
 
-export function GameCard({ game }: { game: Game }) {
+export function GameCard({ game }: { game: GameWithStats }) {
   const tiltRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -26,7 +26,13 @@ export function GameCard({ game }: { game: Game }) {
   const goToGame = () => router.push(`/juego/${game.id}`);
 
   return (
-    <div ref={tiltRef} className="card" onMouseMove={onMove} onMouseLeave={onLeave} onClick={goToGame}>
+    <div
+      ref={tiltRef}
+      className="card"
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      onClick={goToGame}
+    >
       <div className="cover">
         <div className={"cover-bg " + game.cover}></div>
         <div className="label">{game.cat}</div>
@@ -37,10 +43,13 @@ export function GameCard({ game }: { game: Game }) {
         <div className="row">
           <div className="score-badge">
             <span>MEJOR PUNTUACIÓN</span>
-            <b>{game.best.toLocaleString("es-ES")}</b>
+            <b>{game.best === null ? "—" : game.best.toLocaleString("es-ES")}</b>
           </div>
           <button
-            className={"btn " + (game.color === "magenta" ? "magenta" : game.color === "yellow" ? "yellow" : "")}
+            className={
+              "btn " +
+              (game.color === "magenta" ? "magenta" : game.color === "yellow" ? "yellow" : "")
+            }
             onClick={(e) => {
               e.stopPropagation();
               goToGame();
