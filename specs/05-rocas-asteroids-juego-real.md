@@ -1,6 +1,6 @@
 # 05 — ROCAS: Asteroids real
 
-**Estado:** Approved
+**Estado:** Done
 **Depende de:** —
 **Fecha:** 2026-08-22
 
