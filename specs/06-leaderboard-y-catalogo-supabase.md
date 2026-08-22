@@ -1,6 +1,6 @@
 # SPEC 06 — Leaderboard y catálogo de juegos reales en Supabase
 
-> **Estado:** Approved
+> **Estado:** Done
 > **Depende de:** SPEC 04, SPEC 05
 > **Fecha:** 2026-08-22
 > **Objetivo:** Migrar el catálogo de juegos (`GAMES`) y los puntajes (Salón de la Fama, detalle de juego, guardado al perder) de datos falsos (`seededScores`, array estático, `localStorage`) a dos tablas reales en Supabase (`games`, `scores`), leídas desde Server Components y escritas mediante una Server Action.
@@ -119,17 +119,17 @@ export interface ScoreRow {
 
 ## Criterios de aceptación
 
-- [ ] Existen las tablas `games` y `scores` en Supabase, con RLS habilitado y las policies descritas (select público en ambas, insert público solo en `scores`).
-- [ ] `games` tiene 8 filas (una por cada juego actual), sin columnas `best`/`plays` fijas.
-- [ ] `/juegos` carga la lista de juegos desde Supabase (no desde un array estático) y el buscador + filtro de categoría siguen funcionando.
-- [ ] `/juego/[id]` es un Server Component que resuelve `params` como Promise, muestra `best`/`plays` calculados en vivo, y el botón "JUGAR AHORA" navega a `/juego/[id]/jugar`.
-- [ ] Un juego sin partidas guardadas muestra un estado vacío explícito en vez de un ranking inventado.
-- [ ] `/salon` cambia de juego vía navegación (`?game=id`) sin recargar todo el estado de cliente, y el ranking mostrado corresponde a partidas reales de `scores`.
-- [ ] Jugar una partida de Asteroids y perder guarda el puntaje en la tabla `scores` de Supabase (verificable por SQL), no en `localStorage`.
-- [ ] El puntaje recién guardado aparece en `/juego/asteroids` y en `/salon?game=asteroids` sin necesidad de sembrar datos falsos.
-- [ ] `scores` tiene columna `user_id` (`uuid`, nullable) y `name` sigue siendo `not null`; todos los inserts de este spec guardan `user_id: null`.
-- [ ] `lib/data.ts` ya no exporta `GAMES`, `seededScores`, `PLAYERS` ni `ScoreRow`.
-- [ ] `npm run build` termina sin errores de TypeScript ni ESLint.
+- [x] Existen las tablas `games` y `scores` en Supabase, con RLS habilitado y las policies descritas (select público en ambas, insert público solo en `scores`).
+- [x] `games` tiene 8 filas (una por cada juego actual), sin columnas `best`/`plays` fijas.
+- [x] `/juegos` carga la lista de juegos desde Supabase (no desde un array estático) y el buscador + filtro de categoría siguen funcionando.
+- [x] `/juego/[id]` es un Server Component que resuelve `params` como Promise, muestra `best`/`plays` calculados en vivo, y el botón "JUGAR AHORA" navega a `/juego/[id]/jugar`.
+- [x] Un juego sin partidas guardadas muestra un estado vacío explícito en vez de un ranking inventado.
+- [x] `/salon` cambia de juego vía navegación (`?game=id`) sin recargar todo el estado de cliente, y el ranking mostrado corresponde a partidas reales de `scores`.
+- [x] Jugar una partida de Asteroids y perder guarda el puntaje en la tabla `scores` de Supabase (verificable por SQL), no en `localStorage`.
+- [x] El puntaje recién guardado aparece en `/juego/asteroids` y en `/salon?game=asteroids` sin necesidad de sembrar datos falsos.
+- [x] `scores` tiene columna `user_id` (`uuid`, nullable) y `name` sigue siendo `not null`; todos los inserts de este spec guardan `user_id: null`.
+- [x] `lib/data.ts` ya no exporta `GAMES`, `seededScores`, `PLAYERS` ni `ScoreRow`.
+- [x] `npm run build` termina sin errores de TypeScript ni ESLint.
 
 ## Decisiones tomadas y descartadas
 
