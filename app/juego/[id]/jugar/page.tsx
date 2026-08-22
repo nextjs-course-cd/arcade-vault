@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { GAMES } from "@/lib/data";
 import { useAuth } from "@/lib/auth";
+import AsteroidGame from "@/components/games/AsteroidGame";
 
 interface SavedScore {
   game: string;
@@ -28,29 +29,36 @@ export default function GamePlayerPage() {
   const { user } = useAuth();
   const game = GAMES.find((g) => g.id === params.id);
 
+  const isAsteroids = params.id === "asteroids";
+
   const [score, setScore] = useState(0);
-  const [lives] = useState(3);
+  const [lives, setLives] = useState(3);
+  const [engineLevel, setEngineLevel] = useState(1);
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
   const [name, setName] = useState(() => (user ? user.name : "INVITADO"));
   const [saved, setSaved] = useState(false);
+  const [instanceKey, setInstanceKey] = useState(0);
 
-  const level = Math.floor(score / 2500) + 1;
+  const level = isAsteroids ? engineLevel : Math.floor(score / 2500) + 1;
 
   useEffect(() => {
-    if (over || paused) return;
+    if (over || paused || isAsteroids) return;
     const t = setInterval(() => setScore((s) => s + Math.floor(10 + Math.random() * 90)), 220);
     return () => clearInterval(t);
-  }, [over, paused]);
+  }, [over, paused, isAsteroids]);
 
   if (!game) return null;
 
   const endGame = () => setOver(true);
   const restart = () => {
     setScore(0);
+    setLives(3);
+    setEngineLevel(1);
     setPaused(false);
     setOver(false);
     setSaved(false);
+    setInstanceKey((k) => k + 1);
   };
 
   return (
@@ -91,20 +99,39 @@ export default function GamePlayerPage() {
 
       <div className="crt">
         <div className="crt-screen">
-          <div className="game-arena">
-            <div className="grid-floor"></div>
-            <div className="enemy e1"></div>
-            <div className="enemy e2"></div>
-            <div className="enemy e3"></div>
-            <div className="player-ship"></div>
-          </div>
+          {isAsteroids ? (
+            <AsteroidGame
+              key={instanceKey}
+              paused={paused || over}
+              onScoreChange={setScore}
+              onLivesChange={setLives}
+              onLevelChange={setEngineLevel}
+              onGameOver={() => setOver(true)}
+            />
+          ) : (
+            <div className="game-arena">
+              <div className="grid-floor"></div>
+              <div className="enemy e1"></div>
+              <div className="enemy e2"></div>
+              <div className="enemy e3"></div>
+              <div className="player-ship"></div>
+            </div>
+          )}
           {paused && (
             <div className="crt-content" style={{ background: "rgba(0,0,0,0.6)", zIndex: 5 }}>
               <div>
                 <div className="pixel neon-yellow" style={{ fontSize: 22 }}>
                   EN PAUSA
                 </div>
-                <div className="mono" style={{ fontSize: 11, color: "var(--ink-dim)", marginTop: 10, letterSpacing: "0.16em" }}>
+                <div
+                  className="mono"
+                  style={{
+                    fontSize: 11,
+                    color: "var(--ink-dim)",
+                    marginTop: 10,
+                    letterSpacing: "0.16em",
+                  }}
+                >
                   PULSA REANUDAR PARA CONTINUAR
                 </div>
               </div>
@@ -113,9 +140,7 @@ export default function GamePlayerPage() {
         </div>
         <div className="crt-bottom">
           <span className="led">SEÑAL OK</span>
-          <span>
-            {game.title} · CRT-83 · 60 HZ
-          </span>
+          <span>{game.title} · CRT-83 · 60 HZ</span>
           <span>CARGA · 1MB</span>
         </div>
       </div>
