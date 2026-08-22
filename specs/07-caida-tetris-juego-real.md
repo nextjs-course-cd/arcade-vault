@@ -1,6 +1,6 @@
 # 07 — CAÍDA: Tetris real
 
-**Estado:** Approved
+**Estado:** Done
 **Depende de:** SPEC 05, SPEC 06
 **Fecha:** 2026-08-22
 
@@ -54,21 +54,21 @@ interface Piece {
 
 ## Criterios de aceptación
 
-- [ ] Existe `lib/games/caida/engine.ts` con la lógica portada (`createCaidaGame` implementando `ArcadeGameHandle`), sin errores de tipos.
-- [ ] Existe `components/games/CaidaGame.tsx`, tipado con `ArcadeGameProps`, que monta el canvas y expone las props de estado/callbacks.
-- [ ] `lib/games/registry.ts` incluye la entrada `caida` cargada con `next/dynamic({ ssr: false })`.
-- [ ] En `/juego/caida/jugar` se ve el juego real de Tetris (tablero, pieza actual, ghost piece, siguiente pieza) en vez del `.game-arena` decorativo.
-- [ ] El HUD superior de React (Puntuación, Nivel) refleja el estado real del juego; "Vidas" muestra 1 corazón mientras se juega y queda en 0 al perder.
-- [ ] El canvas dibuja su propio panel SCORE/LINES/LEVEL/NEXT internamente, sin overlay de "GAME OVER" ni de "PAUSA" propios.
-- [ ] El botón PAUSA detiene el loop del juego (la pieza deja de caer) y REANUDAR lo continúa; la tecla `P` no tiene efecto dentro del canvas.
-- [ ] El botón FIN termina la partida inmediatamente y abre el modal de puntuación final.
-- [ ] Al no poder spawnear una pieza nueva (game over real) se abre el mismo modal existente, permite ingresar iniciales y guarda en Supabase vía `saveScore`.
-- [ ] "JUGAR DE NUEVO" reinicia el juego desde cero (score 0, nivel 1, tablero vacío).
-- [ ] Los controles de teclado (←/→ mover, ↑/X rotar, ↓ caída suave, Espacio caída dura) funcionan igual que en el juego original.
-- [ ] Limpiar una línea suma puntos según `LINE_SCORES × nivel`; cada 10 líneas sube el nivel y aumenta la velocidad de caída.
-- [ ] No se insertó ninguna fila nueva en la tabla `games` (el id `caida` ya existía).
-- [ ] Los demás juegos del catálogo sin motor real siguen mostrando el mock decorativo sin cambios.
-- [ ] `npm run build` termina sin errores de TypeScript ni ESLint.
+- [x] Existe `lib/games/caida/engine.ts` con la lógica portada (`createCaidaGame` implementando `ArcadeGameHandle`), sin errores de tipos.
+- [x] Existe `components/games/CaidaGame.tsx`, tipado con `ArcadeGameProps`, que monta el canvas y expone las props de estado/callbacks.
+- [x] `lib/games/registry.ts` incluye la entrada `caida` cargada con `next/dynamic({ ssr: false })`.
+- [x] En `/juego/caida/jugar` se ve el juego real de Tetris (tablero, pieza actual, ghost piece, siguiente pieza) en vez del `.game-arena` decorativo.
+- [x] El HUD superior de React (Puntuación, Nivel) refleja el estado real del juego; "Vidas" muestra 1 corazón mientras se juega y queda en 0 al perder.
+- [x] El canvas dibuja su propio panel SCORE/LINES/LEVEL/NEXT internamente, sin overlay de "GAME OVER" ni de "PAUSA" propios.
+- [x] El botón PAUSA detiene el loop del juego (la pieza deja de caer) y REANUDAR lo continúa; la tecla `P` no tiene efecto dentro del canvas.
+- [x] El botón FIN termina la partida inmediatamente y abre el modal de puntuación final.
+- [x] Al no poder spawnear una pieza nueva (game over real) se abre el mismo modal existente, permite ingresar iniciales y guarda en Supabase vía `saveScore`.
+- [x] "JUGAR DE NUEVO" reinicia el juego desde cero (score 0, nivel 1, tablero vacío).
+- [x] Los controles de teclado (←/→ mover, ↑/X rotar, ↓ caída suave, Espacio caída dura) funcionan igual que en el juego original.
+- [x] Limpiar una línea suma puntos según `LINE_SCORES × nivel`; cada 10 líneas sube el nivel y aumenta la velocidad de caída.
+- [x] No se insertó ninguna fila nueva en la tabla `games` (el id `caida` ya existía).
+- [x] Los demás juegos del catálogo sin motor real siguen mostrando el mock decorativo sin cambios.
+- [x] `npm run build` termina sin errores de TypeScript ni ESLint.
 
 ## Decisiones tomadas y descartadas
 
