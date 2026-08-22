@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CATS, type Cat, type GameWithStats } from "@/lib/games";
+import { CATS, type Cat } from "@/lib/categories";
+import type { GameWithStats } from "@/lib/games";
 import { GameCard } from "@/components/GameCard";
 
 export function GamesBrowser({ games }: { games: GameWithStats[] }) {

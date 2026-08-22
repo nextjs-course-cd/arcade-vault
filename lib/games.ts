@@ -18,9 +18,6 @@ export interface GameWithStats extends Game {
   plays: number; // 0 si no hay partidas guardadas
 }
 
-export const CATS = ["TODOS", "ARCADE", "PUZZLE", "SHOOTER", "VERSUS"] as const;
-export type Cat = (typeof CATS)[number];
-
 function withStats(game: Game, scores: { score: number }[]): GameWithStats {
   return {
     ...game,
