@@ -4,21 +4,82 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 @AGENTS.md
 
-## Project
+## Proyecto
 
-Arcade Vault — plataforma para jugar online y competir por puntos (Next.js app, App Router, TypeScript, Tailwind CSS v4). Currently a fresh `create-next-app` scaffold with no game/vault features implemented yet — `app/page.tsx` and `app/layout.tsx` are still default boilerplate.
+Arcade Vault — plataforma para jugar juegos arcade online y competir por puntos. Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, Supabase. Todo el texto de UI, comentarios y specs va **en español**.
 
-## Architecture
+## Comandos
 
-- App Router under `app/`: `app/layout.tsx` is the root layout, `app/page.tsx` the home route. Global styles in `app/globals.css`.
-- Path alias `@/*` maps to repo root (`tsconfig.json`).
-- Static assets served from `public/`.
-- This is a Next.js version with breaking changes vs. training data — before writing code, read the relevant guide under `node_modules/next/dist/docs/` (topics: `01-app`, `02-pages`, `03-architecture`, `04-community`) as instructed in AGENTS.md.
+```bash
+npm run dev        # servidor de desarrollo
+npm run build      # build de producción (verificación principal — no hay test runner)
+npm run start      # servir el build
+npm run lint       # eslint (flat config, next/core-web-vitals + next/typescript + prettier)
+npm run lint:fix
+npm run format     # prettier --write .
+```
+
+No hay test runner configurado. La verificación de una feature es `npm run build` + prueba manual en el navegador.
+
+Un hook `PostToolUse` (`.claude/hooks/format-file.sh`) ejecuta prettier + `eslint --fix` sobre cada archivo tocado con Write/Edit — no hace falta formatear a mano.
+
+## Arquitectura
+
+### Datos (Supabase)
+
+Dos tablas: `games` (catálogo: `id`, `title`, `short`, `long`, `cat`, `cover`, `color`) y `scores` (`game_id`, `user_id`, `name`, `score`, `created_at`).
+
+- `lib/supabase/server.ts` — cliente SSR con cookies, para Server Components y Server Actions.
+- `lib/supabase/client.ts` — cliente de navegador, solo para componentes cliente (ej. `YourBestScore`).
+- `lib/games.ts` — `getGames()` / `getGameById()`; combinan la fila del catálogo con estadísticas derivadas de `scores` (`best`, `plays`) en `GameWithStats`. Las estadísticas **no** se guardan, se calculan.
+- `lib/scores.ts` — `getTopScores(gameId, limit)` para leaderboards.
+- `lib/actions/scores.ts` — Server Action `saveScore()`, único camino de escritura.
+
+Variables de entorno en `.env.local` (plantilla en `.env.template`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+
+El MCP server `supabase` está configurado en `.mcp.json` (proyecto remoto) — úsalo para inspeccionar esquema y sembrar filas del catálogo.
+
+### Auth
+
+`lib/auth.tsx` — `AuthProvider` cliente con estado en `localStorage` (`av_user`), solo un nombre de jugador en mayúsculas (máx. 10 chars). **No** es auth de Supabase; `scores.user_id` se inserta como `null`. Envuelve toda la app desde `app/layout.tsx`.
+
+### Rutas
+
+- `/` home (`HomeContent`), `/juegos` catálogo (`GamesBrowser` + `GameCard`), `/juego/[id]` detalle + leaderboard, `/juego/[id]/jugar` reproductor, `/salon` salón de la fama, `/acerca-de`, `/auth`.
+- Las páginas son Server Components async que hacen fetch de Supabase; los componentes interactivos en `components/` son `"use client"`.
+
+### Motores de juego (lo importante)
+
+Contrato compartido en `lib/games/types.ts`: `ArcadeGameState` (`score`/`lives`/`level`/`status`), `ArcadeGameHandle` (`start`/`pause`/`resume`/`stop`), `ArcadeGameProps` (props que React pasa al componente canvas).
+
+Cada juego real tiene tres piezas:
+
+1. `lib/games/<id>/engine.ts` — motor vanilla portado. **Todo el estado vive dentro de la closure** que devuelve `create<Nombre>Game(canvas, callbacks)`; nada de globals de módulo, para que React Strict Mode pueda montar/desmontar sin colisiones.
+2. `components/games/<Nombre>Game.tsx` — componente `"use client"` que crea el canvas 800×600 (escalado por `devicePixelRatio`), instancia el motor y traduce `onStateChange` a los callbacks de props.
+3. Una línea en `lib/games/registry.ts` mapeando el id de catálogo al componente vía `dynamic(..., { ssr: false })`.
+
+`components/GamePlayer.tsx` resuelve el juego con `getGameComponent(id)` — **nunca ramifiques con `if (game.id === "...")`**. Si el id no está en el registry, cae al placeholder animado con score simulado. El HUD (puntuación/vidas/nivel), la pausa y el modal de fin de juego con guardado son de React; los overlays equivalentes del juego original se eliminan al portar.
+
+Juegos portados: `asteroids`, `caida` (Tetris), `bloque-buster` (Arkanoid). Assets binarios en `public/games/<id>/`.
+
+### Estilos
+
+`app/globals.css` (~1300 líneas) — sistema retro CRT/neón hecho a mano con variables CSS (`--cyan`, `--magenta`, `--ink`, `--line`…) y clases semánticas (`.crt`, `.btn`, `.pixel`, `.neon-cyan`, `.av-player`). Tailwind v4 está disponible pero el grueso del diseño usa estas clases; sigue el sistema existente antes de introducir utilidades nuevas. Fuentes: `Press Start 2P` (pixel) y `JetBrains Mono`, cargadas en el layout.
+
+`references/templates/` contiene el mockup HTML/JSX original del que salió el diseño — consúltalo para pantallas aún no implementadas.
+
+## Workflow spec-driven
+
+Todo cambio de funcionalidad pasa primero por un spec en `specs/NN-slug.md` (numerados, en español, con estado `Draft` → `Approved` → `Done`). Config en `specs/.spec-config.yml` (`AutoCreateBranch: true` — `/spec-impl` crea la rama `spec-NN-slug` sola).
+
+Skills del repo (en `.claude/skills/`, espejados en `.agents/skills/`):
+
+- `/spec` — escribir un spec nuevo.
+- `/spec-impl` — implementar un spec aprobado.
+- `/port-game` — portar un juego vanilla de `references/started-games/` a la plataforma. Escribe primero el spec del port y solo implementa tras aprobación explícita. Su `reference.md` es el playbook técnico del port (contratos, esqueletos, trampas ya resueltas) — léelo completo, no de memoria.
+
+Nunca marques un spec como `Approved` o `Done` por tu cuenta.
 
 ## Skills
 
-- Always use /frontend-design skill when generating user interfaces.
-
-## Spec-driven workflow
-
-This repo follows spec-driven design using the `/spec` and `/spec-impl` skills from https://github.com/Klerith/fernando-skills (install via `npx skills@latest add Klerith/fernando-skills`). Use these commands for planning and implementing features when available.
+- Usa siempre `/frontend-design` al generar interfaces de usuario.
