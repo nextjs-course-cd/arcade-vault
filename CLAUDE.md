@@ -83,3 +83,7 @@ Nunca marques un spec como `Approved` o `Done` por tu cuenta.
 ## Skills
 
 - Usa siempre `/frontend-design` al generar interfaces de usuario.
+
+## Agentes
+
+- `game-planner` (`.claude/agents/game-planner.md`) — decide qué juego portar después. Evalúa candidatos contra el contrato `ArcadeGameHandle`, diversidad de categorías del catálogo y estética retro CRT/neón. Mantiene memoria persistente de sugerencias, aprobaciones y descartes en `references/game-suggestions-todo.md` — nunca repite una idea ya registrada ahí. No escribe specs ni código; su salida alimenta `/spec` o `/port-game`.
