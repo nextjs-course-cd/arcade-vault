@@ -87,3 +87,4 @@ Nunca marques un spec como `Approved` o `Done` por tu cuenta.
 ## Agentes
 
 - `game-planner` (`.claude/agents/game-planner.md`) — decide qué juego portar después. Evalúa candidatos contra el contrato `ArcadeGameHandle`, diversidad de categorías del catálogo y estética retro CRT/neón. Mantiene memoria persistente de sugerencias, aprobaciones y descartes en `references/game-suggestions-todo.md` — nunca repite una idea ya registrada ahí. No escribe specs ni código; su salida alimenta `/spec` o `/port-game`.
+- `game-jam` (`.claude/agents/game-jam.md`) — recibe un tema y genera de forma autónoma un spec completo (`Draft`) de un juego arcade nuevo en `specs/game-jam/<game-name>/01-<slug>.md`, motor desde cero contra `ArcadeGameHandle` (no hay base portable en `references/started-games/`, ya agotada). No pregunta, no toca `references/game-suggestions-todo.md`, no escribe código ni Supabase (solo lectura). El usuario revisa y aprueba antes de `/spec-impl`.
