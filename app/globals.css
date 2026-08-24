@@ -1202,6 +1202,22 @@ a {
   color: var(--ink-faint);
   cursor: default;
 }
+.dp-up {
+  top: 0;
+  left: 53px;
+}
+.dp-down {
+  bottom: 0;
+  left: 53px;
+}
+.dp-left {
+  left: 0;
+  top: 53px;
+}
+.dp-right {
+  right: 0;
+  top: 53px;
+}
 
 .dp-hub {
   position: absolute;
@@ -1839,17 +1855,43 @@ a {
   .av-player {
     padding: 0 16px 32px;
   }
-  .touch-controls {
-    gap: 12px;
-    padding: 12px;
+  .gp {
+    padding: 12px 14px 10px;
+    border-radius: 16px;
   }
-  .touch-dpad {
-    grid-template-columns: repeat(3, 40px);
-    grid-template-rows: repeat(3, 40px);
+  .gp-body {
+    gap: 14px;
+    padding: 18px 6px;
   }
-  .touch-actions .touch-key {
-    width: 48px;
-    height: 48px;
+  .gp-dpad {
+    width: 144px;
+    height: 144px;
+  }
+  .dp {
+    width: 46px;
+    height: 46px;
+    border-radius: 8px;
+  }
+  .dp-up,
+  .dp-down {
+    left: 49px;
+  }
+  .dp-left,
+  .dp-right {
+    top: 49px;
+  }
+  .dp-hub {
+    top: 49px;
+    left: 49px;
+    width: 46px;
+    height: 46px;
+  }
+  .ab {
+    width: 64px;
+    height: 64px;
+  }
+  .gp-actions {
+    gap: 16px;
   }
 }
 
