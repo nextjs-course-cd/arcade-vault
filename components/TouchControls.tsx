@@ -1,6 +1,6 @@
 "use client";
 
-import type { PointerEvent as ReactPointerEvent } from "react";
+import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import { getTouchControls, type TouchButton } from "@/lib/games/touchControls";
 
 function dispatchKey(type: "keydown" | "keyup", code: string) {
@@ -11,19 +11,21 @@ function dispatchKey(type: "keydown" | "keyup", code: string) {
   window.dispatchEvent(new KeyboardEvent(type, { code, key: code }));
 }
 
-function TouchKey({
+function GamepadButton({
   code,
-  label,
+  ariaLabel,
   className,
+  children,
 }: {
   code?: string;
-  label: string;
-  className?: string;
+  ariaLabel: string;
+  className: string;
+  children: ReactNode;
 }) {
   if (!code) {
     return (
-      <button type="button" className={`touch-key ${className ?? ""}`} disabled aria-hidden="true">
-        {label}
+      <button type="button" className={className} disabled aria-hidden="true">
+        {children}
       </button>
     );
   }
@@ -40,19 +42,52 @@ function TouchKey({
   return (
     <button
       type="button"
-      className={`touch-key ${className ?? ""}`}
+      className={className}
+      aria-label={ariaLabel}
       onPointerDown={press}
       onPointerUp={release}
       onPointerLeave={release}
       onPointerCancel={release}
     >
-      {label}
+      {children}
     </button>
   );
 }
 
-function ActionKey({ button, label }: { button?: TouchButton; label: string }) {
-  return <TouchKey code={button?.code} label={button?.label ?? label} className="touch-action" />;
+const ARROW_PATHS = {
+  up: "M12 4 L20 16 L4 16 Z",
+  right: "M8 4 L20 12 L8 20 Z",
+  down: "M4 8 L20 8 L12 20 Z",
+  left: "M16 4 L16 20 L4 12 Z",
+};
+
+function DpadArrow({ d }: { d: string }) {
+  return (
+    <svg className="dp-arrow" viewBox="0 0 24 24">
+      <path d={d} fill="currentColor" />
+    </svg>
+  );
+}
+
+function ActionButton({
+  button,
+  fallbackLabel,
+  variant,
+}: {
+  button?: TouchButton;
+  fallbackLabel: string;
+  variant: "a" | "b";
+}) {
+  return (
+    <GamepadButton
+      code={button?.code}
+      ariaLabel={button?.label ?? fallbackLabel}
+      className={`ab ${variant}`}
+    >
+      <span className="ab-ring" />
+      <span className="ab-letter">{button?.label ?? fallbackLabel}</span>
+    </GamepadButton>
+  );
 }
 
 export function TouchControls({ gameId }: { gameId: string }) {
@@ -60,16 +95,33 @@ export function TouchControls({ gameId }: { gameId: string }) {
   if (!map) return null;
 
   return (
-    <div className="touch-controls">
-      <div className="touch-dpad">
-        <TouchKey code={map.up} label="▲" className="touch-up" />
-        <TouchKey code={map.left} label="◀" className="touch-left" />
-        <TouchKey code={map.right} label="▶" className="touch-right" />
-        <TouchKey code={map.down} label="▼" className="touch-down" />
-      </div>
-      <div className="touch-actions">
-        <ActionKey button={map.buttonB} label="B" />
-        <ActionKey button={map.buttonA} label="A" />
+    <div className="gp" role="group" aria-label="Gamepad">
+      <div className="gp-body">
+        <div className="gp-col gp-col-left">
+          <div className="gp-dpad" aria-label="D-pad">
+            <GamepadButton code={map.up} ariaLabel="Arriba" className="dp dp-up">
+              <DpadArrow d={ARROW_PATHS.up} />
+            </GamepadButton>
+            <GamepadButton code={map.right} ariaLabel="Derecha" className="dp dp-right">
+              <DpadArrow d={ARROW_PATHS.right} />
+            </GamepadButton>
+            <GamepadButton code={map.down} ariaLabel="Abajo" className="dp dp-down">
+              <DpadArrow d={ARROW_PATHS.down} />
+            </GamepadButton>
+            <GamepadButton code={map.left} ariaLabel="Izquierda" className="dp dp-left">
+              <DpadArrow d={ARROW_PATHS.left} />
+            </GamepadButton>
+            <div className="dp-hub" aria-hidden="true">
+              <span className="dp-hub-gem" />
+            </div>
+          </div>
+        </div>
+        <div className="gp-col gp-col-right">
+          <div className="gp-actions">
+            <ActionButton button={map.buttonB} fallbackLabel="B" variant="b" />
+            <ActionButton button={map.buttonA} fallbackLabel="A" variant="a" />
+          </div>
+        </div>
       </div>
     </div>
   );
