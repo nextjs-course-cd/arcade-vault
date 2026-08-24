@@ -3,7 +3,14 @@
 // (sin globals de módulo) para poder montar/desmontar instancias desde React
 // sin colisiones (p. ej. Strict Mode montando efectos dos veces).
 
-import type { ArcadeGameState, ArcadeGameCallbacks, ArcadeGameHandle } from "@/lib/games/types";
+import type {
+  ArcadeGameState,
+  ArcadeGameCallbacks,
+  ArcadeGameHandle,
+  ArcadeGameOptions,
+} from "@/lib/games/types";
+import { DEFAULT_SKIN, type ArcadeSkinId } from "@/lib/games/skins";
+import { ASTEROIDS_SKINS } from "@/lib/games/asteroids/skins";
 
 export type AsteroidsState = ArcadeGameState;
 export type AsteroidsGameCallbacks = ArcadeGameCallbacks;
@@ -11,11 +18,28 @@ export type AsteroidsGameHandle = ArcadeGameHandle;
 
 export function createAsteroidsGame(
   canvas: HTMLCanvasElement,
-  callbacks: AsteroidsGameCallbacks
+  callbacks: AsteroidsGameCallbacks,
+  options?: ArcadeGameOptions
 ): AsteroidsGameHandle {
   const ctx = canvas.getContext("2d")!;
   const W = 800;
   const H = 600;
+
+  // Paleta activa: vive en la closure (no en el módulo) para que
+  // React Strict Mode pueda montar dos instancias sin colisionar.
+  let palette = ASTEROIDS_SKINS[options?.skin ?? DEFAULT_SKIN];
+
+  // Aplica/limpia el glow CRT de la skin activa alrededor de un trazo.
+  function withGlow(color: string, draw: () => void) {
+    if (palette.glowBlur > 0) {
+      ctx.shadowColor = color;
+      ctx.shadowBlur = palette.glowBlur;
+    }
+    draw();
+    if (palette.glowBlur > 0) {
+      ctx.shadowBlur = 0;
+    }
+  }
 
   // ── Input ──────────────────────────────────────────────────────────────
   const keys: Record<string, boolean> = {};
@@ -76,10 +100,12 @@ export function createAsteroidsGame(
     }
 
     draw() {
-      ctx.fillStyle = "#fff";
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fill();
+      withGlow(palette.bulletColor, () => {
+        ctx.fillStyle = palette.bulletColor;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
     }
   }
 
@@ -140,14 +166,16 @@ export function createAsteroidsGame(
       ctx.save();
       ctx.translate(this.x, this.y);
       ctx.rotate(this.rot);
-      ctx.strokeStyle = "#fff";
+      ctx.strokeStyle = palette.asteroidStroke;
       ctx.lineWidth = 1.5;
       ctx.lineJoin = "round";
-      ctx.beginPath();
-      ctx.moveTo(this.verts[0][0], this.verts[0][1]);
-      for (let i = 1; i < this.verts.length; i++) ctx.lineTo(this.verts[i][0], this.verts[i][1]);
-      ctx.closePath();
-      ctx.stroke();
+      withGlow(palette.asteroidStroke, () => {
+        ctx.beginPath();
+        ctx.moveTo(this.verts[0][0], this.verts[0][1]);
+        for (let i = 1; i < this.verts.length; i++) ctx.lineTo(this.verts[i][0], this.verts[i][1]);
+        ctx.closePath();
+        ctx.stroke();
+      });
       ctx.restore();
     }
   }
@@ -184,12 +212,12 @@ export function createAsteroidsGame(
       ctx.save();
       ctx.translate(this.x, this.y);
       ctx.rotate(Math.PI / 4);
-      ctx.strokeStyle = "#0ff";
+      ctx.strokeStyle = palette.powerupColor;
       ctx.lineWidth = 2;
       const r = this.radius * pulse;
-      ctx.strokeRect(-r, -r, r * 2, r * 2);
+      withGlow(palette.powerupColor, () => ctx.strokeRect(-r, -r, r * 2, r * 2));
       ctx.restore();
-      ctx.fillStyle = "#0ff";
+      ctx.fillStyle = palette.powerupColor;
       ctx.font = "bold 12px monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -275,24 +303,26 @@ export function createAsteroidsGame(
       ctx.save();
       ctx.translate(this.x, this.y);
       ctx.rotate(this.angle);
-      ctx.strokeStyle = "#fff";
+      ctx.strokeStyle = palette.shipStroke;
       ctx.lineWidth = 1.5;
       ctx.lineJoin = "round";
 
-      ctx.beginPath();
-      ctx.moveTo(20, 0);
-      ctx.lineTo(-12, -9);
-      ctx.lineTo(-7, 0);
-      ctx.lineTo(-12, 9);
-      ctx.closePath();
-      ctx.stroke();
+      withGlow(palette.shipStroke, () => {
+        ctx.beginPath();
+        ctx.moveTo(20, 0);
+        ctx.lineTo(-12, -9);
+        ctx.lineTo(-7, 0);
+        ctx.lineTo(-12, 9);
+        ctx.closePath();
+        ctx.stroke();
+      });
 
       if (this.thrusting && Math.random() > 0.35) {
         ctx.beginPath();
         ctx.moveTo(-8, -4);
         ctx.lineTo(-8 - rand(6, 14), 0);
         ctx.lineTo(-8, 4);
-        ctx.strokeStyle = "rgba(255, 130, 0, 0.85)";
+        ctx.strokeStyle = palette.thrustColor;
         ctx.stroke();
       }
 
@@ -330,7 +360,7 @@ export function createAsteroidsGame(
 
     draw() {
       const alpha = this.ttl / this.life;
-      ctx.strokeStyle = `rgba(255,255,255,${alpha.toFixed(2)})`;
+      ctx.strokeStyle = `rgba(${palette.particleColor},${alpha.toFixed(2)})`;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(this.x, this.y);
@@ -499,7 +529,7 @@ export function createAsteroidsGame(
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(-Math.PI / 2);
-    ctx.strokeStyle = "#fff";
+    ctx.strokeStyle = palette.shipStroke;
     ctx.lineWidth = 1.2;
     ctx.lineJoin = "round";
     ctx.beginPath();
@@ -513,7 +543,7 @@ export function createAsteroidsGame(
   }
 
   function drawHUD() {
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = palette.hudText;
     ctx.font = "15px monospace";
 
     ctx.textAlign = "left";
@@ -526,13 +556,13 @@ export function createAsteroidsGame(
 
     if (ship.tripleShot > 0) {
       ctx.textAlign = "left";
-      ctx.fillStyle = "#0ff";
+      ctx.fillStyle = palette.powerupColor;
       ctx.fillText(`3x  ${ship.tripleShot.toFixed(1)}s`, 14, 46);
     }
   }
 
   function draw() {
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = palette.background;
     ctx.fillRect(0, 0, W, H);
 
     particles.forEach((p) => p.draw());
@@ -592,5 +622,9 @@ export function createAsteroidsGame(
     window.removeEventListener("keyup", onKeyUp);
   }
 
-  return { start, pause, resume, stop };
+  function setSkin(next: ArcadeSkinId) {
+    palette = ASTEROIDS_SKINS[next];
+  }
+
+  return { start, pause, resume, stop, setSkin };
 }
