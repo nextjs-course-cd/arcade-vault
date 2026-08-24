@@ -13,6 +13,7 @@ import {
   readStoredSkin,
   writeStoredSkin,
 } from "@/lib/games/skins";
+import { TouchControls } from "@/components/TouchControls";
 
 export function GamePlayer({ game }: { game: GameWithStats }) {
   const router = useRouter();
@@ -33,8 +34,13 @@ export function GamePlayer({ game }: { game: GameWithStats }) {
   // localStorage una sola vez al montar, sin useEffect que dispare un
   // set-state síncrono extra.
   const [skin, setSkin] = useState<ArcadeSkinId>(() => readStoredSkin());
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   const level = isReal ? engineLevel : Math.floor(score / 2500) + 1;
+
+  useEffect(() => {
+    setIsTouchDevice(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
 
   useEffect(() => {
     if (over || paused || isReal) return;
@@ -155,6 +161,8 @@ export function GamePlayer({ game }: { game: GameWithStats }) {
           <span>CARGA · 1MB</span>
         </div>
       </div>
+
+      {isReal && isTouchDevice && <TouchControls gameId={game.id} />}
 
       {over && (
         <div className="modal-bd">
