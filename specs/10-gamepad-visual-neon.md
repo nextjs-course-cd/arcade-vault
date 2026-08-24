@@ -1,6 +1,6 @@
 # 10 — Apariencia de gamepad neón para los controles táctiles
 
-**Estado:** Approved
+**Estado:** Done
 **Depende de:** SPEC 09
 **Fecha:** 2026-08-23
 
@@ -45,15 +45,15 @@ No hay persistencia ni estructuras de datos nuevas. Es un cambio 100% de present
 
 ## Criterios de aceptación
 
-- [ ] `components/TouchControls.tsx` renderiza el markup `.gp`/`.gp-body`/`.gp-dpad`/`.gp-actions` con flechas SVG y hub central, en vez de los botones cuadrados con unicode/texto anteriores.
-- [ ] El bloque CSS de `app/globals.css` reemplaza por completo las clases `.touch-*` anteriores por `.gp`/`.dp`/`.ab` y derivadas, reutilizando `--cyan`, `--magenta`, `--ink-dim`, `--ink-faint`, `--line`, `--pixel`, `--mono` ya existentes en `:root`.
-- [ ] El hub central (`.dp-hub-gem`) tiene la animación de pulso (`pulse-led`) igual que en `gamepad.html`.
-- [ ] Los botones A/B muestran el anillo `.ab-ring` en hover y al presionar, con el glow de color correspondiente (magenta para A, cian para B).
-- [ ] Los controles sin mapeo para el juego activo (ej. botón B en `asteroids`/`caida`, `down` en `asteroids`/`bloque-buster`) aparecen `disabled` y atenuados, sin glow ni color de acento, pero conservan la forma del diseño nuevo — no se ocultan.
-- [ ] El ajuste responsive del gamepad vive dentro del bloque `@media (max-width: 720px)` ya existente en `app/globals.css` — no se introduce un breakpoint 620px nuevo.
-- [ ] `getTouchControls(gameId)`, `dispatchKey` (`KeyboardEvent` con `code`/`key` sintéticos) y los Pointer Events (`onPointerDown/Up/Leave/Cancel`) siguen funcionando exactamente igual que antes — mismo `code` disparado por cada botón.
-- [ ] Ningún archivo de `lib/games/touchControls.ts`, ningún engine (`lib/games/asteroids/engine.ts`, `lib/games/caida/engine.ts`, `lib/games/bloque-buster/engine.ts`) ni `components/GamePlayer.tsx` fue modificado.
-- [ ] `npm run build` y `npm run lint` terminan sin errores.
+- [x] `components/TouchControls.tsx` renderiza el markup `.gp`/`.gp-body`/`.gp-dpad`/`.gp-actions` con flechas SVG y hub central, en vez de los botones cuadrados con unicode/texto anteriores.
+- [x] El bloque CSS de `app/globals.css` reemplaza por completo las clases `.touch-*` anteriores por `.gp`/`.dp`/`.ab` y derivadas, reutilizando `--cyan`, `--magenta`, `--ink-dim`, `--ink-faint`, `--line`, `--pixel`, `--mono` ya existentes en `:root`.
+- [x] El hub central (`.dp-hub-gem`) tiene la animación de pulso (`pulse-led`) igual que en `gamepad.html`.
+- [x] Los botones A/B muestran el anillo `.ab-ring` en hover y al presionar, con el glow de color correspondiente (magenta para A, cian para B).
+- [x] Los controles sin mapeo para el juego activo (ej. botón B en `asteroids`/`caida`, `down` en `asteroids`/`bloque-buster`) aparecen `disabled` y atenuados, sin glow ni color de acento, pero conservan la forma del diseño nuevo — no se ocultan.
+- [x] El ajuste responsive del gamepad vive dentro del bloque `@media (max-width: 720px)` ya existente en `app/globals.css` — no se introduce un breakpoint 620px nuevo.
+- [x] `getTouchControls(gameId)`, `dispatchKey` (`KeyboardEvent` con `code`/`key` sintéticos) y los Pointer Events (`onPointerDown/Up/Leave/Cancel`) siguen funcionando exactamente igual que antes — mismo `code` disparado por cada botón.
+- [x] Ningún archivo de `lib/games/touchControls.ts`, ningún engine (`lib/games/asteroids/engine.ts`, `lib/games/caida/engine.ts`, `lib/games/bloque-buster/engine.ts`) ni `components/GamePlayer.tsx` fue modificado.
+- [x] `npm run build` y `npm run lint` terminan sin errores.
 
 ## Decisiones tomadas y descartadas
 
