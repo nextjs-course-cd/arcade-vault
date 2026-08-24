@@ -4,7 +4,11 @@ import type { PointerEvent as ReactPointerEvent } from "react";
 import { getTouchControls, type TouchButton } from "@/lib/games/touchControls";
 
 function dispatchKey(type: "keydown" | "keyup", code: string) {
-  window.dispatchEvent(new KeyboardEvent(type, { code }));
+  // key === code: los motores existentes leen indistintamente e.code
+  // (asteroids, caida) o e.key (bloque-buster), y para las teclas que
+  // mapeamos (ArrowLeft/Right/Up/Down, Space) ambos valores coinciden
+  // salvo Space, que ningún motor lee por e.key.
+  window.dispatchEvent(new KeyboardEvent(type, { code, key: code }));
 }
 
 function TouchKey({
