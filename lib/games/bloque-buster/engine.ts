@@ -4,7 +4,15 @@
 // montar/desmontar instancias desde React sin colisiones (p. ej. Strict Mode
 // montando efectos dos veces).
 
-import type { ArcadeGameState, ArcadeGameCallbacks, ArcadeGameHandle } from "@/lib/games/types";
+import type {
+  ArcadeGameState,
+  ArcadeGameCallbacks,
+  ArcadeGameHandle,
+  ArcadeGameOptions,
+} from "@/lib/games/types";
+import type { ArcadeSkinId } from "@/lib/games/skins";
+import { DEFAULT_SKIN } from "@/lib/games/skins";
+import { BLOQUE_BUSTER_SKINS } from "@/lib/games/bloque-buster/skins";
 
 export type BloqueBusterState = ArcadeGameState;
 export type BloqueBusterGameCallbacks = ArcadeGameCallbacks;
@@ -54,11 +62,16 @@ interface SpriteRect {
 
 export function createBloqueBusterGame(
   canvas: HTMLCanvasElement,
-  callbacks: BloqueBusterGameCallbacks
+  callbacks: BloqueBusterGameCallbacks,
+  options?: ArcadeGameOptions
 ): BloqueBusterGameHandle {
   const ctx = canvas.getContext("2d")!;
   const W = 800;
   const H = 600;
+
+  // Paleta activa (closure, no variable de módulo) para no colisionar entre
+  // instancias montadas por React Strict Mode.
+  let palette = BLOQUE_BUSTER_SKINS[options?.skin ?? DEFAULT_SKIN];
 
   // ── Constantes ─────────────────────────────────────────────────────────
   const PADDLE_SPEED = 400;
@@ -186,18 +199,29 @@ export function createBloqueBusterGame(
     } as Record<BlockColor, SpriteRect>,
   };
 
+  // Imagen cruda del spritesheet (sin teñir) y canvas offscreen ya teñido con
+  // el filtro de la skin activa. Cambiar de skin reprocesa rawImg sin volver
+  // a pedir el .png de red.
+  let rawSpritesheet: HTMLImageElement | null = null;
   let ssImg: HTMLCanvasElement | null = null;
   let ssLoaded = false;
+
+  function tintSpritesheet() {
+    if (!rawSpritesheet) return;
+    const oc = document.createElement("canvas");
+    oc.width = rawSpritesheet.width;
+    oc.height = rawSpritesheet.height;
+    const octx = oc.getContext("2d")!;
+    octx.filter = palette.spriteFilter;
+    octx.drawImage(rawSpritesheet, 0, 0);
+    ssImg = oc;
+  }
 
   function loadSpritesheet(cb: () => void) {
     const rawImg = new Image();
     rawImg.onload = () => {
-      const oc = document.createElement("canvas");
-      oc.width = rawImg.width;
-      oc.height = rawImg.height;
-      const octx = oc.getContext("2d")!;
-      octx.drawImage(rawImg, 0, 0);
-      ssImg = oc;
+      rawSpritesheet = rawImg;
+      tintSpritesheet();
       ssLoaded = true;
       cb();
     };
@@ -389,7 +413,7 @@ export function createBloqueBusterGame(
 
   // ── Draw ───────────────────────────────────────────────────────────────
   function draw() {
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = palette.background;
     ctx.fillRect(0, 0, W, H);
 
     for (const block of blocks) {
@@ -404,7 +428,7 @@ export function createBloqueBusterGame(
     drawSprite("paddle", paddle.x, paddle.y, paddle.w, paddle.h);
     drawSprite("ball", ball.x, ball.y, ball.w, ball.h);
 
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = palette.hudText;
     ctx.font = "bold 18px monospace";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
@@ -476,5 +500,12 @@ export function createBloqueBusterGame(
     canvas.removeEventListener("mousemove", onMouseMove);
   }
 
-  return { start, pause, resume, stop };
+  function setSkin(next: ArcadeSkinId) {
+    palette = BLOQUE_BUSTER_SKINS[next];
+    // Reprocesa el spritesheet crudo ya cargado con el nuevo filtro; el fondo
+    // y el texto HUD se leen de `palette` en cada draw() sin más trabajo.
+    tintSpritesheet();
+  }
+
+  return { start, pause, resume, stop, setSkin };
 }

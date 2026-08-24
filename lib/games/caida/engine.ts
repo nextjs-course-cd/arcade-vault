@@ -2,15 +2,27 @@
 // Todo el estado vive dentro de la closure devuelta por createCaidaGame
 // (sin globals de módulo), mismo patrón que lib/games/asteroids/engine.ts.
 
-import type { ArcadeGameState, ArcadeGameCallbacks, ArcadeGameHandle } from "@/lib/games/types";
+import type {
+  ArcadeGameState,
+  ArcadeGameCallbacks,
+  ArcadeGameHandle,
+  ArcadeGameOptions,
+} from "@/lib/games/types";
+import { DEFAULT_SKIN, type ArcadeSkinId } from "@/lib/games/skins";
+import { CAIDA_SKINS } from "@/lib/games/caida/skins";
 
 export function createCaidaGame(
   canvas: HTMLCanvasElement,
-  callbacks: ArcadeGameCallbacks
+  callbacks: ArcadeGameCallbacks,
+  options?: ArcadeGameOptions
 ): ArcadeGameHandle {
   const ctx = canvas.getContext("2d")!;
   const W = 800;
   const H = 600;
+
+  // Paleta activa: vive en la closure (no en el módulo) para que
+  // React Strict Mode pueda montar dos instancias sin colisionar.
+  let palette = CAIDA_SKINS[options?.skin ?? DEFAULT_SKIN];
 
   // ── Constantes del tablero ────────────────────────────────────────────
   const COLS = 10;
@@ -19,18 +31,6 @@ export function createCaidaGame(
   const BOARD_X = 60;
   const BOARD_Y = 0;
   const PANEL_X = 420;
-
-  const COLORS = [
-    null,
-    "#4dd0e1", // I - cyan
-    "#ffd54f", // O - amarillo
-    "#ba68c8", // T - violeta
-    "#81c784", // S - verde
-    "#e57373", // Z - rojo
-    "#90caf9", // J - celeste
-    "#ffb74d", // L - naranja
-    "#9e9e9e", // N - tuerca (gris metálico)
-  ] as const;
 
   const PIECES: (number[][] | null)[] = [
     null,
@@ -271,17 +271,22 @@ export function createCaidaGame(
     alpha?: number
   ) {
     if (!colorIndex) return;
-    const color = COLORS[colorIndex];
+    const color = palette.pieceColors[colorIndex];
     context.globalAlpha = alpha ?? 1;
-    context.fillStyle = color!;
+    if (palette.glowBlur > 0) {
+      context.shadowColor = color;
+      context.shadowBlur = palette.glowBlur;
+    }
+    context.fillStyle = color;
     context.fillRect(ox + x * size + 1, oy + y * size + 1, size - 2, size - 2);
-    context.fillStyle = "rgba(255,255,255,0.12)";
+    context.shadowBlur = 0;
+    context.fillStyle = palette.blockHighlight;
     context.fillRect(ox + x * size + 1, oy + y * size + 1, size - 2, 4);
     context.globalAlpha = 1;
   }
 
   function drawBoard() {
-    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.strokeStyle = palette.gridLine;
     ctx.lineWidth = 0.5;
     for (let c = 0; c <= COLS; c++) {
       ctx.beginPath();
@@ -323,7 +328,7 @@ export function createCaidaGame(
     const NB = 20;
     const nx = PANEL_X;
     const ny = 150;
-    ctx.fillStyle = "rgba(255,255,255,0.6)";
+    ctx.fillStyle = palette.panelLabel;
     ctx.font = "12px monospace";
     ctx.textAlign = "left";
     ctx.fillText("NEXT", nx, ny - 10);
@@ -336,7 +341,7 @@ export function createCaidaGame(
   }
 
   function drawHUD() {
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = palette.hudText;
     ctx.font = "15px monospace";
     ctx.textAlign = "left";
     ctx.fillText(`SCORE  ${score}`, PANEL_X, 30);
@@ -346,7 +351,7 @@ export function createCaidaGame(
   }
 
   function draw() {
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = palette.background;
     ctx.fillRect(0, 0, W, H);
     drawBoard();
     drawHUD();
@@ -414,5 +419,9 @@ export function createCaidaGame(
     window.removeEventListener("keyup", onKeyUp);
   }
 
-  return { start, pause, resume, stop };
+  function setSkin(next: ArcadeSkinId) {
+    palette = CAIDA_SKINS[next];
+  }
+
+  return { start, pause, resume, stop, setSkin };
 }

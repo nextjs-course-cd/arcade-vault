@@ -9,6 +9,7 @@ const INTERNAL_HEIGHT = 600;
 
 export default function CaidaGame({
   paused,
+  skin,
   onScoreChange,
   onLivesChange,
   onLevelChange,
@@ -35,17 +36,21 @@ export default function CaidaGame({
 
     lastStatusRef.current = "playing";
 
-    const handle = createCaidaGame(canvas, {
-      onStateChange(state) {
-        callbacksRef.current.onScoreChange(state.score);
-        callbacksRef.current.onLivesChange(state.lives);
-        callbacksRef.current.onLevelChange(state.level);
-        if (state.status === "gameover" && lastStatusRef.current !== "gameover") {
-          callbacksRef.current.onGameOver();
-        }
-        lastStatusRef.current = state.status;
+    const handle = createCaidaGame(
+      canvas,
+      {
+        onStateChange(state) {
+          callbacksRef.current.onScoreChange(state.score);
+          callbacksRef.current.onLivesChange(state.lives);
+          callbacksRef.current.onLevelChange(state.level);
+          if (state.status === "gameover" && lastStatusRef.current !== "gameover") {
+            callbacksRef.current.onGameOver();
+          }
+          lastStatusRef.current = state.status;
+        },
       },
-    });
+      { skin }
+    );
 
     handleRef.current = handle;
     handle.start();
@@ -54,6 +59,7 @@ export default function CaidaGame({
       handle.stop();
       handleRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -62,6 +68,10 @@ export default function CaidaGame({
     if (paused) handle.pause();
     else handle.resume();
   }, [paused]);
+
+  useEffect(() => {
+    handleRef.current?.setSkin?.(skin);
+  }, [skin]);
 
   return (
     <canvas
