@@ -6,6 +6,13 @@ import type { GameWithStats } from "@/lib/games";
 import { useAuth } from "@/lib/auth";
 import { saveScore } from "@/lib/actions/scores";
 import { getGameComponent } from "@/lib/games/registry";
+import {
+  type ArcadeSkinId,
+  SKIN_IDS,
+  SKIN_LABELS,
+  readStoredSkin,
+  writeStoredSkin,
+} from "@/lib/games/skins";
 
 export function GamePlayer({ game }: { game: GameWithStats }) {
   const router = useRouter();
@@ -22,6 +29,10 @@ export function GamePlayer({ game }: { game: GameWithStats }) {
   const [name, setName] = useState(() => (user ? user.name : "INVITADO"));
   const [saved, setSaved] = useState(false);
   const [instanceKey, setInstanceKey] = useState(0);
+  // Lazy initializer (mismo patrón que AuthProvider en lib/auth.tsx): lee
+  // localStorage una sola vez al montar, sin useEffect que dispare un
+  // set-state síncrono extra.
+  const [skin, setSkin] = useState<ArcadeSkinId>(() => readStoredSkin());
 
   const level = isReal ? engineLevel : Math.floor(score / 2500) + 1;
 
@@ -64,6 +75,24 @@ export function GamePlayer({ game }: { game: GameWithStats }) {
             <div className="l">Nivel</div>
             <div className="v">{String(level).padStart(2, "0")}</div>
           </div>
+          <div className="hud-stat skin">
+            <div className="l">Skin</div>
+            <select
+              className="hud-select"
+              value={skin}
+              onChange={(e) => {
+                const next = e.target.value as ArcadeSkinId;
+                setSkin(next);
+                writeStoredSkin(next);
+              }}
+            >
+              {SKIN_IDS.map((id) => (
+                <option key={id} value={id}>
+                  {SKIN_LABELS[id]}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="hud-actions">
           <button className="btn yellow" onClick={() => setPaused((p) => !p)}>
@@ -84,6 +113,7 @@ export function GamePlayer({ game }: { game: GameWithStats }) {
             <GameComponent
               key={instanceKey}
               paused={paused || over}
+              skin={skin}
               onScoreChange={setScore}
               onLivesChange={setLives}
               onLevelChange={setEngineLevel}
