@@ -1,6 +1,6 @@
 # 09 — Controles táctiles para móvil
 
-**Estado:** Approved
+**Estado:** Done
 **Depende de:** SPEC 05, SPEC 07, SPEC 08
 **Fecha:** 2026-08-23
 
