@@ -25,13 +25,13 @@ export function YourBestScore({ gameId, gameTitle }: { gameId: string; gameTitle
       const supabase = createClient();
       const { data } = await supabase
         .from("scores")
-        .select("name, score")
+        .select("user_id, score")
         .eq("game_id", gameId)
         .order("score", { ascending: false });
 
       if (cancelled || !data) return;
 
-      const idx = data.findIndex((row) => row.name === user.name);
+      const idx = data.findIndex((row) => row.user_id === user.id);
       setBest(idx === -1 ? null : { rank: idx + 1, score: data[idx].score });
     })();
 
@@ -50,7 +50,7 @@ export function YourBestScore({ gameId, gameTitle }: { gameId: string; gameTitle
           #{String(best.rank).padStart(2, "0")}
         </div>
         <div className="pl" style={{ color: "var(--yellow)" }}>
-          {user.name}
+          {user.displayName}
         </div>
         <div
           className="sc"
