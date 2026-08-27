@@ -238,13 +238,21 @@ export function createCaidaGame(
   let dropInterval = 1000;
   let status: ArcadeGameState["status"] = "playing";
 
+  let lastNotified: ArcadeGameState | null = null;
+
   function notifyState() {
-    callbacks.onStateChange({
-      score,
-      lives: status === "gameover" ? 0 : 1,
-      level,
-      status,
-    });
+    const lives = status === "gameover" ? 0 : 1;
+    if (
+      lastNotified &&
+      lastNotified.score === score &&
+      lastNotified.lives === lives &&
+      lastNotified.level === level &&
+      lastNotified.status === status
+    ) {
+      return;
+    }
+    lastNotified = { score, lives, level, status };
+    callbacks.onStateChange(lastNotified);
   }
 
   function initGame() {

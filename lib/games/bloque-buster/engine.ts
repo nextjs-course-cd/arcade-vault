@@ -327,8 +327,20 @@ export function createBloqueBusterGame(
     );
   }
 
+  let lastNotified: BloqueBusterState | null = null;
+
   function notifyState() {
-    callbacks.onStateChange({ score, lives, level: currentLevel, status: state });
+    if (
+      lastNotified &&
+      lastNotified.score === score &&
+      lastNotified.lives === lives &&
+      lastNotified.level === currentLevel &&
+      lastNotified.status === state
+    ) {
+      return;
+    }
+    lastNotified = { score, lives, level: currentLevel, status: state };
+    callbacks.onStateChange(lastNotified);
   }
 
   // ── Update ─────────────────────────────────────────────────────────────
