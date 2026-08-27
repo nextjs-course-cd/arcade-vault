@@ -19,8 +19,8 @@ export function Nav() {
 
   const close = () => setOpen(false);
 
-  const signOut = () => {
-    authSignOut();
+  const signOut = async () => {
+    await authSignOut();
     close();
   };
 
@@ -54,7 +54,7 @@ export function Nav() {
         </div>
         {user ? (
           <button className="btn ghost auth-btn" onClick={signOut}>
-            {user.name} ▾
+            {user.displayName} ▾
           </button>
         ) : (
           <Link href="/auth" className="btn auth-btn">
@@ -87,7 +87,10 @@ export function Nav() {
           {user ? "Cuenta" : "Iniciar Sesión"}
         </Link>
         <div style={{ flex: 1 }}></div>
-        <div className="pixel" style={{ fontSize: 9, color: "var(--ink-faint)", letterSpacing: "0.16em" }}>
+        <div
+          className="pixel"
+          style={{ fontSize: 9, color: "var(--ink-faint)", letterSpacing: "0.16em" }}
+        >
           CRÉDITOS · 03
         </div>
       </aside>
