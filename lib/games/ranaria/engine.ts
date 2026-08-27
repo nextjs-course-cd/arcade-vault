@@ -124,6 +124,9 @@ export function createRanariaGame(
   let level = 1;
   let state: RanariaState["status"] = "playing";
   let deadTimer = 0;
+  // Congela peligro/timer hasta la primera pulsación de flecha de la vida:
+  // la rana arranca en un punto muerto y el jugador decide cuándo salir.
+  let ready = false;
 
   interface LaneConfig {
     kind: "river" | "road";
@@ -230,6 +233,7 @@ export function createRanariaGame(
     frog = { col: SPAWN_COL, row: SPAWN_ROW, x: SPAWN_COL * CELL, ridingObstacle: null };
     minRowReached = SPAWN_ROW;
     lifeTimer = LIFE_TIME;
+    ready = false;
     clearSpawnColumn();
   }
 
@@ -280,6 +284,7 @@ export function createRanariaGame(
   }
 
   function tryMove(dCol: number, dRow: number) {
+    ready = true;
     const currentCol = clamp(Math.round(frog.x / CELL), 0, COLS - 1);
     const newCol = clamp(currentCol + dCol, 0, COLS - 1);
     const newRow = clamp(frog.row + dRow, 0, ROWS - 1);
@@ -368,6 +373,12 @@ export function createRanariaGame(
         respawnFrog();
         state = "playing";
       }
+      notifyState();
+      return;
+    }
+
+    if (!ready) {
+      updateLanes(dt);
       notifyState();
       return;
     }
