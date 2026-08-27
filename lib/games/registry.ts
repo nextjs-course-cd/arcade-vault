@@ -11,6 +11,7 @@ const registry: Record<string, ComponentType<ArcadeGameProps>> = {
   asteroids: dynamic(() => import("@/components/games/AsteroidGame"), { ssr: false }),
   caida: dynamic(() => import("@/components/games/CaidaGame"), { ssr: false }),
   "bloque-buster": dynamic(() => import("@/components/games/BloqueBusterGame"), { ssr: false }),
+  ranaria: dynamic(() => import("@/components/games/RanariaGame"), { ssr: false }),
 };
 
 export function getGameComponent(id: string): ComponentType<ArcadeGameProps> | null {
