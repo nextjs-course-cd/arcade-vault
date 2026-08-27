@@ -1,6 +1,6 @@
 # 11 — Optimización de performance en los juegos
 
-**Estado:** Approved
+**Estado:** Done
 **Depende de:** SPEC 05, SPEC 07, SPEC 08, SPEC 09
 **Fecha:** 2026-08-26
 
@@ -40,12 +40,12 @@ No aplica. Este spec no introduce ni modifica estructuras de datos, solo código
 
 ## Criterios de aceptación
 
-- [ ] `npm run build` pasa sin errores tras todos los cambios.
-- [ ] `npm run lint` pasa sin errores nuevos.
-- [ ] Los 4 engines siguen respetando el contrato `ArcadeGameHandle`/`ArcadeGameProps` sin cambios de firma.
-- [ ] Cada uno de los 4 juegos fue jugado manualmente una partida completa tras los cambios, confirmando fluidez visual percibida (sin lag notorio) por el usuario.
-- [ ] HUD, pausa, modal de fin de juego y guardado de score siguen funcionando igual que antes en los 4 juegos (sin regresión funcional).
-- [ ] Se documenta en el PR/commit qué causa de lag se encontró en cada juego (si alguna) y qué fix se aplicó.
+- [x] `npm run build` pasa sin errores tras todos los cambios.
+- [x] `npm run lint` pasa sin errores nuevos.
+- [x] Los 4 engines siguen respetando el contrato `ArcadeGameHandle`/`ArcadeGameProps` sin cambios de firma.
+- [x] Cada uno de los 4 juegos fue jugado manualmente una partida completa tras los cambios, confirmando fluidez visual percibida (sin lag notorio) por el usuario.
+- [x] HUD, pausa, modal de fin de juego y guardado de score siguen funcionando igual que antes en los 4 juegos (sin regresión funcional).
+- [x] Se documenta en el PR/commit qué causa de lag se encontró en cada juego (si alguna) y qué fix se aplicó.
 
 ## Decisiones tomadas y descartadas
 
