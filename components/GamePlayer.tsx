@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { GameWithStats } from "@/lib/games";
 import { useAuth } from "@/lib/auth";
@@ -49,6 +49,7 @@ export function GamePlayer({ game }: { game: GameWithStats }) {
   }, [over, paused, isReal]);
 
   const endGame = () => setOver(true);
+  const onGameOver = useCallback(() => setOver(true), []);
   const restart = () => {
     setScore(0);
     setLives(3);
@@ -123,7 +124,7 @@ export function GamePlayer({ game }: { game: GameWithStats }) {
               onScoreChange={setScore}
               onLivesChange={setLives}
               onLevelChange={setEngineLevel}
-              onGameOver={() => setOver(true)}
+              onGameOver={onGameOver}
             />
           ) : (
             <div className="game-arena">
