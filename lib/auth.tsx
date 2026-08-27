@@ -1,48 +1,98 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import type { User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
 
 export interface AuthUser {
-  name: string;
+  id: string;
+  email: string;
+  displayName: string;
 }
 
 interface AuthContextValue {
   user: AuthUser | null;
-  login: (name: string) => void;
-  loginAsGuest: () => void;
-  signOut: () => void;
+  signUp: (
+    email: string,
+    password: string,
+    displayName: string
+  ) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signInWithOAuth: (provider: "google" | "github") => Promise<{ error: string | null }>;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function normalizeDisplayName(raw: string): string {
+  return (raw || "PLAYER1").toUpperCase().slice(0, 10);
+}
+
+function toAuthUser(user: User | null): AuthUser | null {
+  if (!user) return null;
+  const rawName =
+    (user.user_metadata?.display_name as string | undefined) ||
+    user.email?.split("@")[0] ||
+    "PLAYER1";
+  return {
+    id: user.id,
+    email: user.email ?? "",
+    displayName: normalizeDisplayName(rawName),
+  };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      return JSON.parse(localStorage.getItem("av_user") || "null");
-    } catch {
-      return null;
-    }
-  });
+  const [user, setUser] = useState<AuthUser | null>(null);
 
-  const login = (name: string) => {
-    const u: AuthUser = { name: (name || "PLAYER1").toUpperCase().slice(0, 10) };
-    localStorage.setItem("av_user", JSON.stringify(u));
-    setUser(u);
+  useEffect(() => {
+    const supabase = createClient();
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(toAuthUser(session?.user ?? null));
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(toAuthUser(session?.user ?? null));
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const signUp = async (email: string, password: string, displayName: string) => {
+    const supabase = createClient();
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { display_name: normalizeDisplayName(displayName) } },
+    });
+    return { error: error?.message ?? null };
   };
 
-  const loginAsGuest = () => {
-    localStorage.removeItem("av_user");
-    setUser(null);
+  const signIn = async (email: string, password: string) => {
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error: error?.message ?? null };
   };
 
-  const signOut = () => {
-    localStorage.removeItem("av_user");
+  const signInWithOAuth = async (provider: "google" | "github") => {
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
+    });
+    return { error: error?.message ?? null };
+  };
+
+  const signOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, loginAsGuest, signOut }}>
+    <AuthContext.Provider value={{ user, signUp, signIn, signInWithOAuth, signOut }}>
       {children}
     </AuthContext.Provider>
   );

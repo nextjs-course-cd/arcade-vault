@@ -27,7 +27,7 @@ export function GamePlayer({ game }: { game: GameWithStats }) {
   const [engineLevel, setEngineLevel] = useState(1);
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
-  const [name, setName] = useState(() => (user ? user.name : "INVITADO"));
+  const name = user ? user.displayName : "INVITADO";
   const [saved, setSaved] = useState(false);
   const [instanceKey, setInstanceKey] = useState(0);
   // Lazy initializer (mismo patrón que AuthProvider en lib/auth.tsx): lee
@@ -173,11 +173,7 @@ export function GamePlayer({ game }: { game: GameWithStats }) {
             <div className="final">{score.toLocaleString("es-ES")}</div>
             {!saved ? (
               <div className="input-row">
-                <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value.toUpperCase().slice(0, 10))}
-                  placeholder="TUS INICIALES"
-                />
+                <input value={name} readOnly disabled />
                 <button
                   className="btn yellow"
                   onClick={async () => {
