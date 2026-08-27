@@ -52,7 +52,6 @@ export function createRanariaGame(
   const ROWS = 12;
   const CELL = 50;
   const W = COLS * CELL; // 800
-  const H = ROWS * CELL; // 600
 
   const GOAL_ROW = 0;
   const RIVER_ROWS = [1, 2, 3, 4, 5];
@@ -113,7 +112,6 @@ export function createRanariaGame(
 
   // ── Utils ────────────────────────────────────────────────────────────
   const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
-  const rand = (min: number, max: number) => min + Math.random() * (max - min);
 
   // ── Estado del juego ─────────────────────────────────────────────────
   let lanes: Lane[] = [];
