@@ -1,6 +1,6 @@
 # 01 — RANARIA: cruce de carriles arcade tipo Frogger
 
-**Estado:** Draft
+**Estado:** Approved
 **Tema de la jam:** Frogger — cruce de carriles con colisión multi-carril, complejidad media
 **Depende de:** SPEC 05, SPEC 06
 **Fecha:** 2026-08-23

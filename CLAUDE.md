@@ -76,6 +76,7 @@ Skills del repo (en `.claude/skills/`, espejados en `.agents/skills/`):
 
 - `/spec` — escribir un spec nuevo.
 - `/spec-impl` — implementar un spec aprobado.
+- `/spec-impl-game` — igual que `/spec-impl`, pero al terminar el plan encadena `skin-designer` y luego `mobile-porter` (secuencial, nunca en paralelo) sobre el juego recién portado; úsalo en vez de `/spec-impl` cuando el spec sea un port de juego.
 - `/port-game` — portar un juego vanilla de `references/started-games/` a la plataforma. Escribe primero el spec del port y solo implementa tras aprobación explícita. Su `reference.md` es el playbook técnico del port (contratos, esqueletos, trampas ya resueltas) — léelo completo, no de memoria.
 
 Nunca marques un spec como `Approved` o `Done` por tu cuenta.
