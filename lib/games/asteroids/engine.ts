@@ -437,8 +437,20 @@ export function createAsteroidsGame(
     }
   }
 
+  let lastNotified: AsteroidsState | null = null;
+
   function notifyState() {
-    callbacks.onStateChange({ score, lives, level, status: state });
+    if (
+      lastNotified &&
+      lastNotified.score === score &&
+      lastNotified.lives === lives &&
+      lastNotified.level === level &&
+      lastNotified.status === state
+    ) {
+      return;
+    }
+    lastNotified = { score, lives, level, status: state };
+    callbacks.onStateChange(lastNotified);
   }
 
   // ── Update ─────────────────────────────────────────────────────────────
