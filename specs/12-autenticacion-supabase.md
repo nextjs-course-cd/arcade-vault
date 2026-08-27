@@ -1,6 +1,6 @@
 # SPEC 12 — Autenticación real con Supabase Auth
 
-> **Estado:** Approved
+> **Estado:** Done
 > **Depende de:** SPEC 04, SPEC 06
 > **Fecha:** 2026-08-27
 > **Objetivo:** Reemplazar el login/registro simulado (`lib/auth.tsx`, solo nombre en `localStorage`) por Supabase Auth real (email/password + OAuth Google/GitHub), exigiendo sesión para jugar y guardar score.

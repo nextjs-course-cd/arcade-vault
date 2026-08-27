@@ -1,6 +1,6 @@
 # SPEC 13 — Seguridad básica (función SECURITY DEFINER, headers Next.js)
 
-> **Estado:** Approved
+> **Estado:** Done
 > **Depende de:** SPEC 04, SPEC 06, SPEC 12
 > **Fecha:** 2026-08-27
 > **Objetivo:** Cerrar los hallazgos accionables del checklist de seguridad (`references/security/security-checklist.md`): revocar el acceso público a la función `SECURITY DEFINER` `rls_auto_enable()` y agregar headers de seguridad HTTP en Next.js, documentando como pasos manuales pendientes los ajustes de Auth del dashboard de Supabase.
@@ -40,13 +40,13 @@ No se crean tablas nuevas ni se modifica el esquema de `games`/`scores`. El úni
 
 ## Criterios de aceptación
 
-- [ ] Migración aplicada: `REVOKE EXECUTE` sobre `public.rls_auto_enable()` para `anon` y `authenticated`.
-- [ ] `get_advisors` (`security`) ya no reporta `anon_security_definer_function_executable` ni `authenticated_security_definer_function_executable`.
-- [ ] `rowsecurity = true` confirmado en `games` y `scores` (sin cambios, solo verificación).
-- [ ] `next.config.ts` expone `headers()` con los 3 headers del checklist aplicados a todas las rutas.
-- [ ] `npm run build` pasa sin errores.
-- [ ] Verificación manual en navegador: DevTools → Network muestra los 3 headers en la respuesta de `/`.
-- [ ] `auth_leaked_password_protection`, longitud mínima de contraseña y máximo de signups quedan documentados como pendientes manuales — no se marcan como resueltos en este spec.
+- [x] Migración aplicada: `REVOKE EXECUTE` sobre `public.rls_auto_enable()` para `anon` y `authenticated`.
+- [x] `get_advisors` (`security`) ya no reporta `anon_security_definer_function_executable` ni `authenticated_security_definer_function_executable`.
+- [x] `rowsecurity = true` confirmado en `games` y `scores` (sin cambios, solo verificación).
+- [x] `next.config.ts` expone `headers()` con los 3 headers del checklist aplicados a todas las rutas.
+- [x] `npm run build` pasa sin errores.
+- [x] Verificación manual en navegador: DevTools → Network muestra los 3 headers en la respuesta de `/`.
+- [x] `auth_leaked_password_protection`, longitud mínima de contraseña y máximo de signups quedan documentados como pendientes manuales — no se marcan como resueltos en este spec.
 
 ## Decisiones tomadas y descartadas
 
