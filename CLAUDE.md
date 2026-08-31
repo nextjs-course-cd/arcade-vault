@@ -102,3 +102,4 @@ Definición completa de cada uno en su archivo (`.claude/agents/<nombre>.md`); a
 - `game-jam` — dado un tema, genera de forma autónoma el spec completo (`Draft`) de un juego arcade nuevo con motor desde cero en `specs/game-jam/<game-name>/01-<slug>.md`.
 - `skin-designer` — implementa las tres skins (clásico/neón/retro) de un juego ya portado que aún no las tenga.
 - `mobile-porter` — audita e implementa el responsive móvil (solo web) de una ruta o de toda la app.
+- `security-auditor` — audita seguridad de base de datos (RLS, policies, advisors de Supabase) y de la aplicación (auth, `proxy.ts`, Server Actions, headers, secretos); mantiene `references/security/security-checklist.md` como memoria viva. Solo lectura contra Supabase, no implementa correcciones ni escribe specs.
