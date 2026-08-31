@@ -54,15 +54,15 @@ No se crean tablas nuevas. Cambian:
 
 ## Criterios de aceptación
 
-- [ ] `lib/actions/scores.ts` usa `supabase.auth.getUser()`, no `getSession()`.
-- [ ] `saveScore` rechaza (`throw`) `score` no entero, negativo o mayor a `999_999_999`.
-- [ ] `saveScore` rechaza (`throw`) `name` vacío, de más de 10 caracteres, o con caracteres de control.
-- [ ] Guardado como invitado (sin sesión) sigue funcionando, insertando `user_id = null`.
-- [ ] Guardado autenticado inserta `user_id = auth.uid()` verificado por `getUser()`, no por una cookie sin verificar.
-- [ ] Policy `scores_public_insert` en Supabase exige `auth.uid() = user_id` o ambos `null`; confirmado vía `pg_policies`.
-- [ ] `get_advisors` (`security`) no reporta advisories nuevos tras el cambio de grants.
-- [ ] `npm run build` pasa sin errores.
-- [ ] `references/security/security-checklist.md` tiene #6, #7, #8 y #10 movidos a "Resueltos" con fecha y referencia a SPEC 14.
+- [x] `lib/actions/scores.ts` usa `supabase.auth.getUser()`, no `getSession()`.
+- [x] `saveScore` rechaza (`throw`) `score` no entero, negativo o mayor a `999_999_999`.
+- [x] `saveScore` rechaza (`throw`) `name` vacío, de más de 10 caracteres, o con caracteres de control.
+- [x] Guardado como invitado (sin sesión) sigue funcionando, insertando `user_id = null`.
+- [x] Guardado autenticado inserta `user_id = auth.uid()` verificado por `getUser()`, no por una cookie sin verificar.
+- [x] Policy `scores_public_insert` en Supabase exige `auth.uid() = user_id` o ambos `null`; confirmado vía `pg_policies`.
+- [x] `get_advisors` (`security`) no reporta advisories nuevos tras el cambio de grants.
+- [x] `npm run build` pasa sin errores.
+- [x] `references/security/security-checklist.md` tiene #6, #7, #8 y #10 movidos a "Resueltos" con fecha y referencia a SPEC 14.
 
 ## Decisiones tomadas y descartadas
 
